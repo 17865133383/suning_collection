@@ -123,12 +123,15 @@ class ChromeDrive:
 
     def keep_wait(self):
         self.login()
-        print("等待到点抢购...")
+        print("等待收藏夹中的商品上架")
+
+        #两种情况，一种是不知道什么时候上架，另一种是知道什么时候上架
+        #这是第一种知道什么时候上架
         while True:
             current_time = datetime.now()
             if (self.seckill_time_obj - current_time).seconds > 180:
-                self.driver.get("https://shopping.suning.com/cart.do")
-                print("每十秒刷新一次界面，防止登录超时...")
+                self.driver.get("https://favorite.suning.com/myFavoriteImg.do")
+                print("每10秒刷新一次界面，防止登录超时...")
                 sleep(10)
 
                 #测试过程中让程序跳出循环直接执行,正常情况下不会出现
@@ -136,35 +139,14 @@ class ChromeDrive:
 
             else:
                 self.get_cookie()
-                print("抢购时间点将近，停止自动刷新，准备进入抢购阶段...")
+                print("商品上架时间点将近，停止自动刷新，准备进入抢购阶段...")
                 break
 
 
     def sec_kill(self):
         self.keep_wait()
-        self.driver.get("https://shopping.suning.com/cart.do")
+        self.driver.get("https://favorite.suning.com/myFavoriteImg.do")
         sleep(1)
-
-        '''
-        #系统页面更新不及时，点击结算按钮，可能导致无法正常结算
-        if self.driver.find_element_by_id("chooseAllCheckFrame1"):
-            self.driver.find_element_by_id("chooseAllCheckFrame1").click()
-
-            print("已经选中全部商品！！！")
-        '''
-
-        '''
-        #勾选全部商品的另一种做法，加入了判断的流程
-        all_select = self.driver.find_element_by_id("chooseAllCheckFrame2")
-        if all_select:
-
-            # 判断全选框是否处于勾选状态,未勾选进行勾选，勾选了则不行操作。
-            if all_select.get_attribute("aria-checked") == "false":
-                all_select.click()
-        '''
-
-
-
 
         # 抢购次数，抢购是否成功
         submit_succ = False
